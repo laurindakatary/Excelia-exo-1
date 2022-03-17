@@ -28,7 +28,7 @@ jobs:
      
        # Runs a set of command using the runners shell
       - name: Virtual env creation
-        run: 
+        run: | 
         python3 -m venv .venv
         source .venv/bin/activate
         pip install -r requirements.txt
