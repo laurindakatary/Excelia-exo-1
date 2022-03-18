@@ -33,8 +33,9 @@ jobs:
           source .venv/bin/activate
           pip install -r requirements.txt
 
-    test:
+  test:
      # The type of runner that the job will run on
+    needs: build
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -47,12 +48,22 @@ jobs:
       - name: Flake8
         run: |
         pip install flake8
-        flake8  --exclude= '.venv' --extend-ignore=E501
+        flake8  --exclude=' .venv' --extend-ignore=E501
 
       # Runs a set of command using the runners shell
       - name: pytest
         run: |
         pip install pytest-cov
-        python -m pytest --doctest-modules -- ignore=main.py --cov
+        python -m pytest --doctest-modules --ignore=main.py --cov
 
-
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_email: "louis.nilbor@gmail.com"
+          heroku_app_name: "excelia-exo-1"
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
