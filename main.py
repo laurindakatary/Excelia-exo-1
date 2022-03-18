@@ -1,6 +1,7 @@
 from bottle import route, run, template, request, response, redirect
 import sqlite3
 from helpers import somme, generate_cookie_value
+import sys
 
 
 # =========================================================================
@@ -90,4 +91,4 @@ def signup():
             }
 
 
-run(host='localhost', port=8080, reloader=True)
+run(host='0.0.0.0', port=sys.argv[1], reloader=True)
