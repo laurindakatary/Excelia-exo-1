@@ -63,7 +63,7 @@ def login():
 
 # ====================================================================
 # Formulaire signup (s'enregistrer)
-@route("/signup/", method=["GET", "POST"])
+@route("/signup", method=["GET", "POST"])
 @route("/signup/", method=["GET", "POST"])
 def signup():
     if request.method == "GET":
