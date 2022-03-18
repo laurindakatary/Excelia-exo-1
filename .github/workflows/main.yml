@@ -56,3 +56,17 @@ jobs:
           pip install pytest-cov
           python -m pytest --doctest-modules --ignore=main.py --cov
 
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_email: "laurindakatary@yahoo.fr"
+          heroku_app_name: "excelia-exo"
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+
+
