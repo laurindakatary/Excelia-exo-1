@@ -1,18 +1,18 @@
-from bottle import route, run, template, request,response, redirect,abort
+from bottle import route, run, template, request, response, redirect
 import sqlite3
-from helpers import addition, generate_cookie_value
+from helpers import somme, generate_cookie_value
 
 
-## =========================================================================
+# =========================================================================
 
 @route("/addition/<a>/<b>")
 @route("/addition/<a>/<b>/")
-def addition(a,b):
-    return addition(a,b)
+def addition(a, b):
+    return somme(a, b)
 
 
-#==========================================
-## Afficher les informations de l'utilisateur
+# ==========================================
+# Afficher les informations de l'utilisateur
 @route("/user")
 @route("/user/")
 def user_info():
@@ -28,13 +28,12 @@ def user_info():
 
     return template("user_info", username=result[1], email=result[2])
 
+# ===============================================================================
+# Formulaire login ( se connecter)
 
 
-
-## ===============================================================================
-## Formulaire login ( se connecter)
-@route("/login",method=["GET", "POST"])
-@route("/login/",method=["GET", "POST"])
+@route("/login", method=["GET", "POST"])
+@route("/login/", method=["GET", "POST"])
 def login():
     if request.method == "GET":
         return template("login_template")
@@ -47,25 +46,24 @@ def login():
     cursor.execute(f"SELECT password FROM facebook WHERE username = '{username}'")
     db_password = cursor.fetchone()
 
-
     if db_password[0] == "":
         return {"error": True, "message": "utilisateur inconnu"}
 
-    if db_password[0]!= password:
+    if db_password[0] != password:
         return {"error": True, "message": "Mot de passe inconnu"}
 
     cookie_value = generate_cookie_value()
     cursor.execute(f"UPDATE facebook SET cookie = '{cookie_value}' WHERE username = '{username}'")
     conn.commit()
 
-    response.set_cookie("fb_session" , cookie_value, path="/")
+    response.set_cookie("fb_session", cookie_value, path="/")
     redirect("/user/")
 
 
-##====================================================================
-## Formulaire signup (s'enregistrer)
-@route("/signup/",method=["GET", "POST"])
-@route("/signup/",method=["GET", "POST"])
+# ====================================================================
+# Formulaire signup (s'enregistrer)
+@route("/signup/", method=["GET", "POST"])
+@route("/signup/", method=["GET", "POST"])
 def signup():
     if request.method == "GET":
         return template("signup_template")
@@ -88,50 +86,8 @@ def signup():
         conn.commit()
         return {
             "error": False,
-            "message": f"Bien enregistré en tant que {username} id: {cursor, lastrowid}",
+            "message": f"Bien enregistré en tant que {username} id: {cursor.lastrowid}",
             }
 
 
-
-
 run(host='localhost', port=8080, reloader=True)
-
-
-
-""""
-def generate_cookie_value():
-    """
-    >>> len[generate_cookie_value()]
-    128
-    """
-    return str(" ".join(random.choice("0123456789ABCDEFabcdef@&! ") for i in range(128)))
-
- ============================================================
-##@route('/hello/<name>')
-##def hello(name="Laurinda"):
-##  response.set_cookie("my_value",name, path="/")
-##  return template('<b>Hello {{name}}</b>!', name=name)
-##@route("/index/")
-##def index():
-##    cookie_name = request.get_cookie("my_value")
-##    return template('<b>Hello {{retrieved_name}}</b>!', retrieved_name=cookie_name)
-
- ==================================================================
-## EXO
-@route("/addition/<a>/<b>")
-@route("/addition/<a>/<b>/")
-def addition(a,b):
-
-    #doctest debut
-    """
-    >>> addition(2,4)
-    {'Result': 6}
-    """
-    #fin doctest 
-    return {'Result':somme(a,b)}
-
-def somme(a,b):
-    y = int(a)+ int(b)
-    return y 
-
-"""

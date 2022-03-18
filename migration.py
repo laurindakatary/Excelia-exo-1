@@ -10,10 +10,5 @@ conn.execute(
 conn.execute(
     "INSERT INTO facebook (username, email, password) VALUES ('Vivien' , 'vivien@facebook.com', 'TEST123@')")
 
-
-
-
 conn.commit()
 print("Table created")
-
-
