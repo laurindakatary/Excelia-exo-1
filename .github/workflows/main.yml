@@ -25,11 +25,34 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-     
+
        # Runs a set of command using the runners shell
       - name: Virtual env creation
-        run: | 
+        run: |
           python3 -m venv .venv
           source .venv/bin/activate
           pip install -r requirements.txt
-        
+
+    test:
+     # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+
+       # Runs a set of command using the runners shell
+      - name: Flake8
+        run: |
+        pip install flake8
+        flake8  --exclude= '.venv' --extend-ignore=E501
+
+      # Runs a set of command using the runners shell
+      - name: pytest
+        run: |
+        pip install pytest-cov
+        python -m pytest --doctest-modules -- ignore=main.py --cov
+
+
