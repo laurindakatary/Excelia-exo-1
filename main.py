@@ -1,22 +1,18 @@
 from bottle import route, run, template, request,response, redirect,abort
 import sqlite3
-import random
+from helpers import addition, generate_cookie_value
 
-def generate_cookie_value():
-    return str(" ".join(random.choice("0123456789ABCDEFabcdef@&! ") for i in range(128)))
 
-## ============================================================
-##@route('/hello/<name>')
-##def hello(name="Laurinda"):
-##  response.set_cookie("my_value",name, path="/")
-##  return template('<b>Hello {{name}}</b>!', name=name)
-##@route("/index/")
-##def index():
-##    cookie_name = request.get_cookie("my_value")
-##    return template('<b>Hello {{retrieved_name}}</b>!', retrieved_name=cookie_name)
-## ==================================================================
+## =========================================================================
 
-## Afficher les informations de l'utilisateur 
+@route("/addition/<a>/<b>")
+@route("/addition/<a>/<b>/")
+def addition(a,b):
+    return addition(a,b)
+
+
+#==========================================
+## Afficher les informations de l'utilisateur
 @route("/user")
 @route("/user/")
 def user_info():
@@ -29,7 +25,6 @@ def user_info():
 
     if result is None:
         redirect("/login/")
-        
 
     return template("user_info", username=result[1], email=result[2])
 
@@ -51,7 +46,7 @@ def login():
     cursor = conn.cursor()
     cursor.execute(f"SELECT password FROM facebook WHERE username = '{username}'")
     db_password = cursor.fetchone()
-    
+
 
     if db_password[0] == "":
         return {"error": True, "message": "utilisateur inconnu"}
@@ -66,7 +61,7 @@ def login():
     response.set_cookie("fb_session" , cookie_value, path="/")
     redirect("/user/")
 
-    
+
 ##====================================================================
 ## Formulaire signup (s'enregistrer)
 @route("/signup/",method=["GET", "POST"])
@@ -92,7 +87,7 @@ def signup():
 
         conn.commit()
         return {
-            "error": False, 
+            "error": False,
             "message": f"Bien enregistré en tant que {username} id: {cursor, lastrowid}",
             }
 
@@ -100,3 +95,43 @@ def signup():
 
 
 run(host='localhost', port=8080, reloader=True)
+
+
+
+""""
+def generate_cookie_value():
+    """
+    >>> len[generate_cookie_value()]
+    128
+    """
+    return str(" ".join(random.choice("0123456789ABCDEFabcdef@&! ") for i in range(128)))
+
+ ============================================================
+##@route('/hello/<name>')
+##def hello(name="Laurinda"):
+##  response.set_cookie("my_value",name, path="/")
+##  return template('<b>Hello {{name}}</b>!', name=name)
+##@route("/index/")
+##def index():
+##    cookie_name = request.get_cookie("my_value")
+##    return template('<b>Hello {{retrieved_name}}</b>!', retrieved_name=cookie_name)
+
+ ==================================================================
+## EXO
+@route("/addition/<a>/<b>")
+@route("/addition/<a>/<b>/")
+def addition(a,b):
+
+    #doctest debut
+    """
+    >>> addition(2,4)
+    {'Result': 6}
+    """
+    #fin doctest 
+    return {'Result':somme(a,b)}
+
+def somme(a,b):
+    y = int(a)+ int(b)
+    return y 
+
+"""
