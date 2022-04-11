@@ -19,4 +19,4 @@ def somme(a, b):
     """
 
     y = int(a) + int(b)
-    return {'Result': y}
+    return {"Result": y}

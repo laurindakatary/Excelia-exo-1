@@ -1,0 +1,9 @@
+[flake8]
+exclude =
+    .gitignore,
+    .git,
+    __pycache__
+    .vscode
+    .venv
+max-line-lenght = 150
+extend-ignore = E501, E221, E22, E251

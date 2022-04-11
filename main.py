@@ -6,6 +6,7 @@ import sys
 
 # =========================================================================
 
+
 @route("/addition/<a>/<b>")
 @route("/addition/<a>/<b>/")
 def addition(a, b):
@@ -17,9 +18,9 @@ def addition(a, b):
 @route("/user")
 @route("/user/")
 def user_info():
-    fb_session = request.get_cookie('fb_session')
+    fb_session = request.get_cookie("fb_session")
 
-    conn = sqlite3.connect('fb.db')
+    conn = sqlite3.connect("fb.db")
     cursor = conn.cursor()
     cursor.execute(f"SELECT * FROM facebook WHERE cookie = '{fb_session}'")
     result = cursor.fetchone()
@@ -28,6 +29,7 @@ def user_info():
         redirect("/login/")
 
     return template("user_info", username=result[1], email=result[2])
+
 
 # ===============================================================================
 # Formulaire login ( se connecter)
@@ -42,7 +44,7 @@ def login():
         username = request.forms.username
         password = request.forms.password
 
-    conn = sqlite3.connect('fb.db')
+    conn = sqlite3.connect("fb.db")
     cursor = conn.cursor()
     cursor.execute(f"SELECT password FROM facebook WHERE username = '{username}'")
     db_password = cursor.fetchone()
@@ -54,7 +56,9 @@ def login():
         return {"error": True, "message": "Mot de passe inconnu"}
 
     cookie_value = generate_cookie_value()
-    cursor.execute(f"UPDATE facebook SET cookie = '{cookie_value}' WHERE username = '{username}'")
+    cursor.execute(
+        f"UPDATE facebook SET cookie = '{cookie_value}' WHERE username = '{username}'"
+    )
     conn.commit()
 
     response.set_cookie("fb_session", cookie_value, path="/")
@@ -76,9 +80,9 @@ def signup():
         print(email)
         print(password)
         if username == "":
-            return{"error": True, "message": "Il manque le nom d'utilisateur"}
+            return {"error": True, "message": "Il manque le nom d'utilisateur"}
 
-        conn = sqlite3.connect('fb.db')
+        conn = sqlite3.connect("fb.db")
         cursor = conn.cursor()
         sql_request = f"INSERT INTO facebook (username, email, password) VALUES ('{username}','{email}','{password}')"
         print(sql_request)
@@ -88,7 +92,7 @@ def signup():
         return {
             "error": False,
             "message": f"Bien enregistré en tant que {username} id: {cursor.lastrowid}",
-            }
+        }
 
 
-run(host='0.0.0.0', port=sys.argv[1], reloader=True)
+run(host="0.0.0.0", port=sys.argv[1], reloader=True)
